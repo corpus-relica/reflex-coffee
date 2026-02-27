@@ -1,0 +1,22 @@
+{
+  "name": "reflex-coffee",
+  "version": "0.1.0",
+  "description": "Interactive TUI demo of @corpus-relica/reflex — a coffee shop order workflow",
+  "type": "module",
+  "scripts": {
+    "dev": "NODE_ENV=production tsx src/main.tsx",
+    "build": "tsc",
+    "start": "node dist/main.js"
+  },
+  "dependencies": {
+    "@corpus-relica/reflex": "file:../reflex",
+    "ink": "^6.8.0",
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.2",
+    "@types/react": "^19.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
