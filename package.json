@@ -9,7 +9,7 @@
     "start": "node dist/main.js"
   },
   "dependencies": {
-    "@corpus-relica/reflex": "file:../reflex",
+    "@corpus-relica/reflex": "file:../reflex/typescript",
     "ink": "^6.8.0",
     "react": "^19.0.0"
   },

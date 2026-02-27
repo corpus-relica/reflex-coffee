@@ -19,11 +19,11 @@ somewhere/
 git clone git@github.com:corpus-relica/reflex.git
 git clone git@github.com:corpus-relica/reflex-coffee.git
 
-# 2. Build reflex (reflex-coffee depends on its dist/ output)
-cd reflex
+# 2. Build reflex (reflex-coffee depends on its typescript dist/ output)
+cd reflex/typescript
 yarn install
 yarn build
-cd ..
+cd ../..
 
 # 3. Install and run reflex-coffee
 cd reflex-coffee
