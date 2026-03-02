@@ -1,4 +1,4 @@
-/* ── Reset & Base ───────────────────────────────────────────── */
+/* ── Reset ──────────────────────────────────────────────────── */
 
 *,
 *::before,
@@ -9,22 +9,30 @@
 }
 
 :root {
+  /* App theme — warm coffee tones */
+  --coffee-bg: #1a1410;
+  --coffee-surface: #241e18;
+  --coffee-surface-2: #2e2620;
+  --coffee-border: rgba(255, 220, 180, 0.08);
+  --coffee-text: #f0e6d8;
+  --coffee-text-muted: #9a8b7a;
+  --coffee-accent: #d4a574;
+  --coffee-accent-hover: #e0b888;
+  --coffee-warm: #c97b3a;
+
+  /* Debug panel theme — cool dev tones */
   --bg: #0d1117;
   --bg-panel: #161b22;
   --bg-panel-alt: #1c2129;
   --bg-hover: #21262d;
   --border: rgba(255, 255, 255, 0.08);
-  --border-accent: rgba(88, 166, 255, 0.3);
-
   --text: #e6edf3;
   --text-muted: #7d8590;
   --text-dim: #484f58;
-
   --accent: #58a6ff;
   --accent-dim: #1f3a5f;
   --green: #3fb950;
   --yellow: #d29922;
-  --red: #f85149;
   --purple: #bc8cff;
   --cyan: #39d353;
 
@@ -38,15 +46,15 @@
   --font-mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
   --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
   --font-size: 12px;
-  --radius: 6px;
+  --radius: 8px;
 }
 
 html, body {
   height: 100%;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--coffee-bg);
+  color: var(--coffee-text);
   font-family: var(--font-ui);
-  font-size: var(--font-size);
+  font-size: 14px;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -54,56 +62,252 @@ html, body {
   height: 100%;
 }
 
-/* ── Layout ─────────────────────────────────────────────────── */
+/* ── Coffee App Layout ──────────────────────────────────────── */
 
-.app {
-  display: grid;
-  grid-template-rows: auto 1fr auto auto;
+.coffee-app {
+  display: flex;
+  flex-direction: column;
   height: 100vh;
-  gap: 1px;
-  background: var(--border);
+  position: relative;
 }
 
-.header {
+.coffee-loading {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 8px 16px;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
+  justify-content: center;
+  height: 100%;
+  color: var(--coffee-text-muted);
 }
 
-.header h1 {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
-  letter-spacing: -0.01em;
+.coffee-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  min-height: 0;
 }
 
-.header h1 span {
-  opacity: 0.5;
+/* ── Header ─────────────────────────────────────────────────── */
+
+.coffee-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 48px;
+}
+
+.coffee-logo {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.coffee-header h1 {
+  font-size: 28px;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  color: var(--coffee-accent);
+}
+
+/* ── Body states ────────────────────────────────────────────── */
+
+.coffee-body {
+  width: 100%;
+  max-width: 440px;
+}
+
+/* Prompt / choice selection */
+.coffee-prompt h2 {
+  font-size: 20px;
   font-weight: 400;
-  margin-left: 6px;
+  margin-bottom: 8px;
+  color: var(--coffee-text);
+}
+
+.coffee-current-order {
+  color: var(--coffee-text-muted);
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.coffee-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.coffee-choice {
+  display: block;
+  width: 100%;
+  padding: 14px 20px;
+  border: 1px solid var(--coffee-border);
+  border-radius: var(--radius);
+  background: var(--coffee-surface);
+  color: var(--coffee-text);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.coffee-choice:hover {
+  background: var(--coffee-surface-2);
+  border-color: var(--coffee-accent);
+  color: var(--coffee-accent);
+}
+
+.coffee-choice:active {
+  transform: scale(0.99);
+}
+
+/* Preparing / spinner */
+.coffee-preparing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.coffee-preparing p {
+  color: var(--coffee-text-muted);
+  font-size: 15px;
+}
+
+.coffee-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--coffee-border);
+  border-top-color: var(--coffee-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Complete */
+.coffee-complete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+.coffee-complete-icon {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.coffee-complete h2 {
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--coffee-accent);
+}
+
+.coffee-order-summary {
+  font-size: 16px;
+  color: var(--coffee-text);
+  background: var(--coffee-surface);
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  border: 1px solid var(--coffee-border);
+}
+
+.coffee-thankyou {
+  color: var(--coffee-text-muted);
+  font-size: 13px;
+}
+
+.coffee-btn {
+  margin-top: 8px;
+  padding: 10px 28px;
+  border: 1px solid var(--coffee-accent);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--coffee-accent);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.coffee-btn:hover {
+  background: var(--coffee-accent);
+  color: var(--coffee-bg);
+}
+
+/* ── Debug toggle ───────────────────────────────────────────── */
+
+.debug-toggle {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 16px;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  background: var(--bg);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
   font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.6;
 }
 
-.main-panels {
+.debug-toggle:hover {
+  opacity: 1;
+  color: var(--text);
+}
+
+.debug-toggle.open {
+  bottom: 320px;
+  opacity: 1;
+}
+
+.debug-toggle-icon {
+  font-size: 8px;
+}
+
+/* ── Debug drawer ───────────────────────────────────────────── */
+
+.debug-drawer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 320px;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 99;
+  overflow: hidden;
+}
+
+.debug-drawer.open {
+  transform: translateY(0);
+}
+
+.debug-panels {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 1px;
   background: var(--border);
-  min-height: 0;
+  height: 100%;
 }
 
-.right-panels {
-  display: grid;
-  grid-template-rows: 1fr auto;
-  gap: 1px;
-  background: var(--border);
-  min-height: 0;
-}
-
-/* ── Panel ──────────────────────────────────────────────────── */
+/* ── Panel (debug) ──────────────────────────────────────────── */
 
 .panel {
   background: var(--bg-panel);
@@ -135,6 +339,7 @@ html, body {
   flex: 1;
   overflow-y: auto;
   padding: 8px 12px;
+  font-size: var(--font-size);
 }
 
 .panel-body::-webkit-scrollbar {
@@ -227,8 +432,8 @@ html, body {
 
 .bb-entry {
   display: grid;
-  grid-template-columns: minmax(90px, auto) 1fr auto;
-  gap: 12px;
+  grid-template-columns: minmax(80px, auto) 1fr auto;
+  gap: 10px;
   padding: 3px 0;
   font-family: var(--font-mono);
   font-size: 11px;
@@ -269,7 +474,7 @@ html, body {
 }
 
 @keyframes bb-flash {
-  0% { background: var(--accent-dim); }
+  0% { background: rgba(31, 58, 95, 0.5); }
   100% { background: transparent; }
 }
 
@@ -324,10 +529,6 @@ html, body {
 
 /* ── Events ─────────────────────────────────────────────────── */
 
-.events-panel {
-  max-height: 180px;
-}
-
 .event-entry {
   display: flex;
   align-items: baseline;
@@ -373,141 +574,4 @@ html, body {
   color: var(--text-dim);
   font-style: italic;
   padding: 8px 0;
-}
-
-/* ── Controls ───────────────────────────────────────────────── */
-
-.controls {
-  background: var(--bg);
-  padding: 10px 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-top: 1px solid var(--border);
-}
-
-.controls-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg-panel);
-  color: var(--text);
-  font-family: var(--font-ui);
-  font-size: 11px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  user-select: none;
-}
-
-.btn:hover {
-  background: var(--bg-hover);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.btn:active {
-  transform: scale(0.97);
-}
-
-.btn.primary {
-  background: var(--accent-dim);
-  border-color: var(--border-accent);
-  color: var(--accent);
-}
-
-.btn.primary:hover {
-  background: rgba(31, 58, 95, 0.8);
-}
-
-.btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.btn:disabled:hover {
-  background: var(--bg-panel);
-  border-color: var(--border);
-}
-
-.btn.active {
-  background: rgba(210, 153, 34, 0.15);
-  border-color: rgba(210, 153, 34, 0.3);
-  color: var(--yellow);
-}
-
-.mode-indicator {
-  font-size: 10px;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.divider {
-  width: 1px;
-  height: 20px;
-  background: var(--border);
-}
-
-/* ── Choice selector ────────────────────────────────────────── */
-
-.choices {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-}
-
-.choices .prompt {
-  color: var(--yellow);
-  font-weight: 500;
-  font-size: 12px;
-  white-space: nowrap;
-}
-
-.choice-btn {
-  padding: 5px 14px;
-  border: 1px solid rgba(210, 153, 34, 0.25);
-  border-radius: var(--radius);
-  background: rgba(210, 153, 34, 0.08);
-  color: var(--text);
-  font-family: var(--font-ui);
-  font-size: 11px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.choice-btn:hover {
-  background: rgba(210, 153, 34, 0.2);
-  border-color: rgba(210, 153, 34, 0.5);
-  color: var(--yellow);
-}
-
-.choice-btn:active {
-  transform: scale(0.97);
-}
-
-/* ── Status ─────────────────────────────────────────────────── */
-
-.status-complete {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--green);
-  font-weight: 500;
-  font-size: 13px;
-}
-
-.status-message {
-  color: var(--text-dim);
-  font-size: 11px;
-  margin-left: auto;
 }
