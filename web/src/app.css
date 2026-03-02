@@ -1,0 +1,513 @@
+/* ── Reset & Base ───────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #0d1117;
+  --bg-panel: #161b22;
+  --bg-panel-alt: #1c2129;
+  --bg-hover: #21262d;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-accent: rgba(88, 166, 255, 0.3);
+
+  --text: #e6edf3;
+  --text-muted: #7d8590;
+  --text-dim: #484f58;
+
+  --accent: #58a6ff;
+  --accent-dim: #1f3a5f;
+  --green: #3fb950;
+  --yellow: #d29922;
+  --red: #f85149;
+  --purple: #bc8cff;
+  --cyan: #39d353;
+
+  --event-node: #58a6ff;
+  --event-edge: #6cb6ff;
+  --event-bb: #3fb950;
+  --event-workflow: #bc8cff;
+  --event-engine: #7d8590;
+  --event-error: #f85149;
+
+  --font-mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+  --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-size: 12px;
+  --radius: 6px;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--font-size);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  height: 100%;
+}
+
+/* ── Layout ─────────────────────────────────────────────────── */
+
+.app {
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  height: 100vh;
+  gap: 1px;
+  background: var(--border);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.header h1 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.header h1 span {
+  opacity: 0.5;
+  font-weight: 400;
+  margin-left: 6px;
+  font-size: 11px;
+}
+
+.main-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  min-height: 0;
+}
+
+.right-panels {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 1px;
+  background: var(--border);
+  min-height: 0;
+}
+
+/* ── Panel ──────────────────────────────────────────────────── */
+
+.panel {
+  background: var(--bg-panel);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--bg-panel-alt);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.panel-header h2 {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 12px;
+}
+
+.panel-body::-webkit-scrollbar {
+  width: 4px;
+}
+
+.panel-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.panel-body::-webkit-scrollbar-thumb {
+  background: var(--text-dim);
+  border-radius: 2px;
+}
+
+/* ── Workflow Graph ──────────────────────────────────────────── */
+
+.graph-node {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.graph-node.depth-1 {
+  padding-left: 20px;
+}
+
+.graph-node .icon {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-dim);
+  background: transparent;
+}
+
+.graph-node.status-visited .icon {
+  border-color: var(--green);
+  background: var(--green);
+}
+
+.graph-node.status-current .icon {
+  border-color: var(--yellow);
+  background: var(--yellow);
+  box-shadow: 0 0 6px rgba(210, 153, 34, 0.5);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 4px rgba(210, 153, 34, 0.4); }
+  50% { box-shadow: 0 0 10px rgba(210, 153, 34, 0.7); }
+}
+
+.graph-node .label {
+  color: var(--text-muted);
+}
+
+.graph-node.status-current .label {
+  color: var(--yellow);
+  font-weight: 600;
+}
+
+.graph-node.status-visited .label {
+  color: var(--text);
+}
+
+.graph-node .desc {
+  color: var(--text-dim);
+  margin-left: auto;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.graph-connector {
+  padding-left: 3px;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1;
+}
+
+/* ── Blackboard ─────────────────────────────────────────────── */
+
+.bb-entry {
+  display: grid;
+  grid-template-columns: minmax(90px, auto) 1fr auto;
+  gap: 12px;
+  padding: 3px 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  border-bottom: 1px solid var(--border);
+  align-items: baseline;
+}
+
+.bb-entry:last-child {
+  border-bottom: none;
+}
+
+.bb-key {
+  color: var(--cyan);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.bb-value {
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bb-scope {
+  color: var(--text-dim);
+  font-family: var(--font-ui);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.bb-scope.child {
+  color: var(--purple);
+}
+
+.bb-entry.flash {
+  animation: bb-flash 0.6s ease-out;
+}
+
+@keyframes bb-flash {
+  0% { background: var(--accent-dim); }
+  100% { background: transparent; }
+}
+
+.bb-empty {
+  color: var(--text-dim);
+  font-style: italic;
+  padding: 8px 0;
+}
+
+/* ── Stack ──────────────────────────────────────────────────── */
+
+.stack-frame {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.stack-frame .depth {
+  color: var(--text-dim);
+  min-width: 20px;
+}
+
+.stack-frame .workflow-id {
+  color: var(--text-muted);
+}
+
+.stack-frame .arrow {
+  color: var(--text-dim);
+}
+
+.stack-frame .node-id {
+  color: var(--text);
+}
+
+.stack-frame.active .workflow-id {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.stack-frame.active .node-id {
+  color: var(--accent);
+}
+
+.stack-empty {
+  color: var(--text-dim);
+  font-style: italic;
+  padding: 4px 0;
+}
+
+/* ── Events ─────────────────────────────────────────────────── */
+
+.events-panel {
+  max-height: 180px;
+}
+
+.event-entry {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 2px 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.event-time {
+  color: var(--text-dim);
+  flex-shrink: 0;
+  font-size: 10px;
+  min-width: 70px;
+}
+
+.event-type {
+  flex-shrink: 0;
+  padding: 0 5px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 500;
+  min-width: 85px;
+  text-align: center;
+}
+
+.event-type.node { color: var(--event-node); background: rgba(88, 166, 255, 0.1); }
+.event-type.edge { color: var(--event-edge); background: rgba(108, 182, 255, 0.1); }
+.event-type.bb { color: var(--event-bb); background: rgba(63, 185, 80, 0.1); }
+.event-type.workflow { color: var(--event-workflow); background: rgba(188, 140, 255, 0.1); }
+.event-type.engine { color: var(--event-engine); background: rgba(125, 133, 144, 0.1); }
+.event-type.error { color: var(--event-error); background: rgba(248, 81, 73, 0.1); }
+
+.event-message {
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.events-empty {
+  color: var(--text-dim);
+  font-style: italic;
+  padding: 8px 0;
+}
+
+/* ── Controls ───────────────────────────────────────────────── */
+
+.controls {
+  background: var(--bg);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.controls-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-panel);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.btn:hover {
+  background: var(--bg-hover);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn.primary {
+  background: var(--accent-dim);
+  border-color: var(--border-accent);
+  color: var(--accent);
+}
+
+.btn.primary:hover {
+  background: rgba(31, 58, 95, 0.8);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn:disabled:hover {
+  background: var(--bg-panel);
+  border-color: var(--border);
+}
+
+.btn.active {
+  background: rgba(210, 153, 34, 0.15);
+  border-color: rgba(210, 153, 34, 0.3);
+  color: var(--yellow);
+}
+
+.mode-indicator {
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+}
+
+/* ── Choice selector ────────────────────────────────────────── */
+
+.choices {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.choices .prompt {
+  color: var(--yellow);
+  font-weight: 500;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.choice-btn {
+  padding: 5px 14px;
+  border: 1px solid rgba(210, 153, 34, 0.25);
+  border-radius: var(--radius);
+  background: rgba(210, 153, 34, 0.08);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.choice-btn:hover {
+  background: rgba(210, 153, 34, 0.2);
+  border-color: rgba(210, 153, 34, 0.5);
+  color: var(--yellow);
+}
+
+.choice-btn:active {
+  transform: scale(0.97);
+}
+
+/* ── Status ─────────────────────────────────────────────────── */
+
+.status-complete {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--green);
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.status-message {
+  color: var(--text-dim);
+  font-size: 11px;
+  margin-left: auto;
+}
